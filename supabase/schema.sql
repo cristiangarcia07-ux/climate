@@ -8,6 +8,20 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ============================================================
+-- DROP EVERYTHING (clean slate)
+-- ============================================================
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS handle_new_user();
+
+DROP TABLE IF EXISTS "api_links"  CASCADE;
+DROP TABLE IF EXISTS "modera_pais"  CASCADE;
+DROP TABLE IF EXISTS "usuario_panel_control"  CASCADE;
+DROP TABLE IF EXISTS "ciudad"  CASCADE;
+DROP TABLE IF EXISTS "estado_Com_autonom"  CASCADE;
+DROP TABLE IF EXISTS "pais"  CASCADE;
+DROP TABLE IF EXISTS "privilegio"  CASCADE;
+
+-- ============================================================
 -- 1. PRIVILEGIO (roles)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS "privilegio" (
