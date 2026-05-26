@@ -1,40 +1,13 @@
-import { signUp, signIn, signOut, onAuthStateChanged } from './supabase.js';
-import { fetchApiKeys } from './api_loader.js';
+import { supabase } from './supabase.js';
 import { geocode } from './geocode.js';
 import { fetchWeather as fetchOM } from './apis/openmeteo.js';
 import { fetchWeather as fetchWA } from './apis/weatherapi.js';
 import { fetchWeather as fetchOW } from './apis/openweather.js';
 import { aggregate } from './aggregator.js';
-import { renderAuth, renderApp, renderConfirmEmail, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
+import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
 
 const appEl = document.getElementById('app');
-
-onAuthStateChanged((user) => {
-  if (user) {
-    if (!user.email_confirmed_at) {
-      renderConfirmEmail(appEl, user.email);
-    } else {
-      renderApp(appEl, user, handleSearch, handleLogout);
-    }
-  } else {
-    renderAuth(appEl, handleLogin, handleSignup);
-  }
-});
-
-async function handleLogin(email, password) {
-  await signIn(email, password);
-}
-
-async function handleSignup(email, password) {
-  const data = await signUp(email, password);
-  if (!data.session) {
-    renderConfirmEmail(appEl, email, null);
-  }
-}
-
-async function handleLogout() {
-  await signOut();
-}
+renderPublicApp(appEl, handleSearch);
 
 async function handleSearch(query) {
   hideError();
@@ -69,4 +42,20 @@ async function handleSearch(query) {
     hideLoading();
     showError(err.message);
   }
+}
+
+async function fetchApiKeys(paisId) {
+  const { data, error } = await supabase
+    .from('api_links')
+    .select('url')
+    .eq('id_pais', paisId);
+
+  if (error) throw error;
+
+  const keys = { weatherapi: null, openweathermap: null };
+  for (const row of data) {
+    if (row.url.includes('weatherapi')) keys.weatherapi = row.url;
+    if (row.url.includes('openweathermap')) keys.openweathermap = row.url;
+  }
+  return keys;
 }

@@ -7,6 +7,7 @@
 --    Authentication → Settings → Site URL:
 --      http://localhost:3000 (dev) or your GH Pages URL (prod)
 --    Also add redirect URLs for email confirmation.
+--    Auth is only required for admin.html — the weather checker (index.html) is public.
 -- ============================================================
 
 -- 0. EXTENSIONS
@@ -179,10 +180,10 @@ DROP POLICY IF EXISTS "Own update" ON "usuario_panel_control";
 CREATE POLICY "Own update" ON "usuario_panel_control"
     FOR UPDATE USING (auth.uid() = "user_id");
 
--- API keys: only authenticated users may read
-DROP POLICY IF EXISTS "Auth read" ON "api_links";
-CREATE POLICY "Auth read" ON "api_links"
-    FOR SELECT USING (auth.role() = 'authenticated');
+-- API keys: public read (needed for weather checker — no login required)
+DROP POLICY IF EXISTS "Public read" ON "api_links";
+CREATE POLICY "Public read" ON "api_links"
+    FOR SELECT USING (true);
 
 -- modera_pais: admin-only management
 DROP POLICY IF EXISTS "Admin all" ON "modera_pais";

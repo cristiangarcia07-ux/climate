@@ -134,6 +134,21 @@ header h1 {
   padding: 12px 14px;
 }
 
+.admin-link, .back-link {
+  font-size: 0.875rem;
+  color: #2563eb;
+  text-decoration: none;
+}
+.admin-link:hover, .back-link:hover {
+  text-decoration: underline;
+}
+
+.panel-placeholder {
+  text-align: center;
+  padding: 48px 16px;
+  color: #888;
+}
+
 .loading, .error {
   text-align: center;
   padding: 12px;

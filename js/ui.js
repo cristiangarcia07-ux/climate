@@ -1,9 +1,46 @@
 import { weatherCodeToEmoji } from './aggregator.js';
 
+export function renderPublicApp(container, onSearch) {
+  container.innerHTML = `
+    <header>
+      <h1>Climate Checker</h1>
+      <a href="admin.html" class="admin-link">Panel</a>
+    </header>
+    <main>
+      <div class="search-bar">
+        <input type="text" id="city-input" placeholder="Search city..." autofocus>
+        <button id="btn-search">Search</button>
+        <button id="btn-geolocate" title="Use my location">&#128205;</button>
+      </div>
+      <div id="loading" class="loading hidden">Loading...</div>
+      <div id="error" class="error hidden"></div>
+      <div id="results"></div>
+      <div class="sources" id="sources"></div>
+    </main>
+  `;
+
+  document.getElementById('btn-search').addEventListener('click', () => {
+    const q = document.getElementById('city-input').value.trim();
+    if (q) onSearch(q);
+  });
+  document.getElementById('city-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const q = e.target.value.trim();
+      if (q) onSearch(q);
+    }
+  });
+  document.getElementById('btn-geolocate').addEventListener('click', () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => onSearch(`${pos.coords.latitude},${pos.coords.longitude}`),
+      () => showError('Geolocation denied or unavailable')
+    );
+  });
+}
+
 export function renderAuth(container, onLogin, onSignup) {
   container.innerHTML = `
     <div class="auth-card">
-      <h2>Climate Checker</h2>
+      <h2>Admin Panel</h2>
       <form id="auth-form">
         <input type="email" id="auth-email" placeholder="Email" required>
         <input type="password" id="auth-password" placeholder="Password" required>
@@ -13,6 +50,7 @@ export function renderAuth(container, onLogin, onSignup) {
         </div>
       </form>
       <p id="auth-error" class="error"></p>
+      <a href="index.html" class="back-link">&#8592; Back to weather</a>
     </div>
   `;
 
@@ -49,49 +87,26 @@ export function renderConfirmEmail(container, email) {
       <h2>Check your email</h2>
       <p>We sent a confirmation link to <strong>${email}</strong>.</p>
       <p class="confirm-hint">Click the link to activate your account, then sign in.</p>
+      <a href="index.html" class="back-link">&#8592; Back to weather</a>
     </div>
   `;
 }
 
-export function renderApp(container, user, onSearch, onLogout) {
+export function renderAdminApp(container, user, onLogout) {
   container.innerHTML = `
     <header>
-      <h1>Climate Checker</h1>
+      <h1>Climate Panel</h1>
       <div class="header-right">
         <span class="user-email">${user.email}</span>
         <button id="btn-logout">Logout</button>
       </div>
     </header>
     <main>
-      <div class="search-bar">
-        <input type="text" id="city-input" placeholder="Search city..." autofocus>
-        <button id="btn-search">Search</button>
-        <button id="btn-geolocate" title="Use my location">&#128205;</button>
-      </div>
-      <div id="loading" class="loading hidden">Loading...</div>
-      <div id="error" class="error hidden"></div>
-      <div id="results"></div>
-      <div class="sources" id="sources"></div>
+      <p class="panel-placeholder">Panel content coming soon — manage countries, cities, API keys.</p>
     </main>
   `;
 
   document.getElementById('btn-logout').addEventListener('click', onLogout);
-  document.getElementById('btn-search').addEventListener('click', () => {
-    const q = document.getElementById('city-input').value.trim();
-    if (q) onSearch(q);
-  });
-  document.getElementById('city-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      const q = e.target.value.trim();
-      if (q) onSearch(q);
-    }
-  });
-  document.getElementById('btn-geolocate').addEventListener('click', () => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => onSearch(`${pos.coords.latitude},${pos.coords.longitude}`),
-      () => showError('Geolocation denied or unavailable')
-    );
-  });
 }
 
 export function showLoading() {
