@@ -102,6 +102,29 @@ ALTER TABLE "api_links"
     ADD FOREIGN KEY ("id_pais") REFERENCES "pais"("id") ON DELETE CASCADE;
 
 -- ============================================================
+-- TRIGGER: auto-create usuario_panel_control on signup
+-- Runs as SECURITY DEFINER so RLS doesn't block it.
+-- ============================================================
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.usuario_panel_control (user_id, email, privilegio_id)
+  VALUES (NEW.id, NEW.email, 3)
+  ON CONFLICT (user_id) DO NOTHING;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION handle_new_user();
+
+-- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
 ALTER TABLE "pais"               ENABLE ROW LEVEL SECURITY;
@@ -162,12 +185,14 @@ CREATE POLICY "Admin all" ON "modera_pais"
 INSERT INTO "privilegio" ("nombre") VALUES
     ('admin'),
     ('editor'),
-    ('viewer');
+    ('viewer')
+ON CONFLICT DO NOTHING;
 
 -- Countries
 INSERT INTO "pais" ("nombre", "url_bandera") VALUES
     ('España',    'https://flagcdn.com/w320/es.png'),
-    ('México',    'https://flagcdn.com/w320/mx.png');
+    ('México',    'https://flagcdn.com/w320/mx.png')
+ON CONFLICT DO NOTHING;
 
 -- States / autonomous communities
 INSERT INTO "estado_Com_autonom" ("nombre", "id_pais") VALUES
@@ -175,7 +200,8 @@ INSERT INTO "estado_Com_autonom" ("nombre", "id_pais") VALUES
     ('Comunidad de Madrid',  (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
     ('Cataluña',             (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
     ('CDMX',                 (SELECT "id" FROM "pais" WHERE "nombre" = 'México')),
-    ('Jalisco',              (SELECT "id" FROM "pais" WHERE "nombre" = 'México'));
+    ('Jalisco',              (SELECT "id" FROM "pais" WHERE "nombre" = 'México'))
+ON CONFLICT DO NOTHING;
 
 -- Cities — Sevilla is the placeholder city
 INSERT INTO "ciudad" ("nombreciudad", "url_bandera", "id_estado") VALUES
@@ -184,11 +210,13 @@ INSERT INTO "ciudad" ("nombreciudad", "url_bandera", "id_estado") VALUES
     ('Madrid',              NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Comunidad de Madrid')),
     ('Barcelona',           NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Cataluña')),
     ('Ciudad de México',    NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'CDMX')),
-    ('Guadalajara',         NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Jalisco'));
+    ('Guadalajara',         NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Jalisco'))
+ON CONFLICT DO NOTHING;
 
 -- API links (replace YOUR_*_KEY with real keys in production)
 INSERT INTO "api_links" ("url", "id_pais") VALUES
     ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
     ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
     ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', (SELECT "id" FROM "pais" WHERE "nombre" = 'México')),
-    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', (SELECT "id" FROM "pais" WHERE "nombre" = 'México'));
+    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', (SELECT "id" FROM "pais" WHERE "nombre" = 'México'))
+ON CONFLICT DO NOTHING;

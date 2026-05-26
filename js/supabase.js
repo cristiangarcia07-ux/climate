@@ -7,16 +7,6 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export async function signUp(email, password) {
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
-
-  if (data.user) {
-    const { error: profileError } = await supabase.from('usuario_panel_control').insert({
-      user_id: data.user.id,
-      email: data.user.email,
-      privilegio_id: 3
-    });
-    if (profileError && profileError.code !== '23505') throw profileError;
-  }
-
   return data;
 }
 
