@@ -1,31 +1,43 @@
-import { signUp, signIn, signOut, onAuthStateChanged } from './supabase.js';
+import { supabase, onSessionChange, getSession } from './supabase.js';
 import { renderAuth, renderConfirmEmail, renderAdminApp } from './ui.js';
 
 const appEl = document.getElementById('app');
+let rendered = false;
 
-onAuthStateChanged((user) => {
-  if (user) {
-    if (!user.email_confirmed_at) {
-      renderConfirmEmail(appEl, user.email);
-    } else {
-      renderAdminApp(appEl, user, handleLogout);
-    }
+async function init() {
+  const session = await getSession();
+  if (session?.user) {
+    rendered = true;
+    renderAdminApp(appEl, session.user, handleLogout);
   } else {
     renderAuth(appEl, handleLogin, handleSignup);
   }
-});
+
+  onSessionChange((user) => {
+    if (user) {
+      rendered = true;
+      renderAdminApp(appEl, user, handleLogout);
+    } else {
+      rendered = false;
+      renderAuth(appEl, handleLogin, handleSignup);
+    }
+  });
+}
+
+init();
 
 async function handleLogin(email, password) {
-  await signIn(email, password);
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
 }
 
 async function handleSignup(email, password) {
-  const data = await signUp(email, password);
-  if (!data.session) {
-    renderConfirmEmail(appEl, email);
-  }
+  const data = await supabase.auth.signUp({ email, password });
+  if (data.error) throw data.error;
+  return data;
 }
 
 async function handleLogout() {
-  await signOut();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
 }

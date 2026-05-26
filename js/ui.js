@@ -49,19 +49,23 @@ export function renderAuth(container, onLogin, onSignup) {
           <button type="button" id="btn-signup">Sign Up</button>
         </div>
       </form>
-      <p id="auth-error" class="error"></p>
+      <p id="auth-error" class="error hidden"></p>
       <a href="index.html" class="back-link">&#8592; Back to weather</a>
     </div>
   `;
+
+  const errEl = document.getElementById('auth-error');
 
   document.getElementById('auth-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
+    errEl.classList.add('hidden');
     try {
       await onLogin(email, password);
     } catch (err) {
-      document.getElementById('auth-error').textContent = err.message;
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
     }
   });
 
@@ -69,14 +73,19 @@ export function renderAuth(container, onLogin, onSignup) {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
     if (!email || !password) {
-      document.getElementById('auth-error').textContent = 'Enter email and password';
+      errEl.textContent = 'Enter email and password';
+      errEl.classList.remove('hidden');
       return;
     }
+    errEl.classList.add('hidden');
     try {
-      await onSignup(email, password);
-      document.getElementById('auth-error').textContent = 'Check your email for confirmation!';
+      const data = await onSignup(email, password);
+      if (!data?.session) {
+        renderConfirmEmail(container, email);
+      }
     } catch (err) {
-      document.getElementById('auth-error').textContent = err.message;
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
     }
   });
 }

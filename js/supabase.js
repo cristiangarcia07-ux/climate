@@ -21,13 +21,15 @@ export async function signOut() {
   if (error) throw error;
 }
 
-export function onAuthStateChanged(callback) {
+export function onSessionChange(callback) {
   return supabase.auth.onAuthStateChange((event, session) => {
-    callback(session?.user ?? null);
+    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+      callback(session?.user ?? null);
+    }
   });
 }
 
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
+export async function getSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session;
 }
