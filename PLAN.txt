@@ -28,6 +28,9 @@ DATABASE (Supabase):
     api_links             — weather API endpoints stored per country (keys in DB, not in JS)
 
   Auth: Supabase Auth handles passwords with server-side bcrypt.
+        Email verification enabled by default. Flow:
+          Sign Up → "Check your email" screen → click link → auto-login
+          Sign In → if email unconfirmed → "Check your email" screen
   RLS:  Public read on reference tables; authenticated-only for api_links;
         owner-only for usuario_panel_control; admin-only for modera_pais.
 

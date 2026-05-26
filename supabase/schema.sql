@@ -2,6 +2,11 @@
 -- CLIMATE CHECKER — SUPABASE SCHEMA
 -- Run this in the Supabase SQL Editor to bootstrap the DB.
 -- Passwords handled by Supabase Auth (bcrypt server-side).
+--
+-- ⚠️ BEFORE running, configure Auth settings in Supabase Dashboard:
+--    Authentication → Settings → Site URL:
+--      http://localhost:3000 (dev) or your GH Pages URL (prod)
+--    Also add redirect URLs for email confirmation.
 -- ============================================================
 
 -- 0. EXTENSIONS

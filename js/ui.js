@@ -43,6 +43,16 @@ export function renderAuth(container, onLogin, onSignup) {
   });
 }
 
+export function renderConfirmEmail(container, email) {
+  container.innerHTML = `
+    <div class="auth-card">
+      <h2>Check your email</h2>
+      <p>We sent a confirmation link to <strong>${email}</strong>.</p>
+      <p class="confirm-hint">Click the link to activate your account, then sign in.</p>
+    </div>
+  `;
+}
+
 export function renderApp(container, user, onSearch, onLogout) {
   container.innerHTML = `
     <header>

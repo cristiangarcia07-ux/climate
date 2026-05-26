@@ -5,13 +5,17 @@ import { fetchWeather as fetchOM } from './apis/openmeteo.js';
 import { fetchWeather as fetchWA } from './apis/weatherapi.js';
 import { fetchWeather as fetchOW } from './apis/openweather.js';
 import { aggregate } from './aggregator.js';
-import { renderAuth, renderApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
+import { renderAuth, renderApp, renderConfirmEmail, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
 
 const appEl = document.getElementById('app');
 
 onAuthStateChanged((user) => {
   if (user) {
-    renderApp(appEl, user, handleSearch, handleLogout);
+    if (!user.email_confirmed_at) {
+      renderConfirmEmail(appEl, user.email);
+    } else {
+      renderApp(appEl, user, handleSearch, handleLogout);
+    }
   } else {
     renderAuth(appEl, handleLogin, handleSignup);
   }
@@ -22,7 +26,10 @@ async function handleLogin(email, password) {
 }
 
 async function handleSignup(email, password) {
-  await signUp(email, password);
+  const data = await signUp(email, password);
+  if (!data.session) {
+    renderConfirmEmail(appEl, email, null);
+  }
 }
 
 async function handleLogout() {

@@ -33,6 +33,12 @@ body {
   font-size: 1.5rem;
 }
 
+.confirm-hint {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
 .auth-card input {
   width: 100%;
   padding: 12px;
