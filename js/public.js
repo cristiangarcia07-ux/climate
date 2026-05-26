@@ -9,6 +9,18 @@ import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hi
 const appEl = document.getElementById('app');
 renderPublicApp(appEl, handleSearch);
 
+detectLocation();
+
+function detectLocation() {
+  if (!navigator.geolocation) return;
+  showLoading();
+  navigator.geolocation.getCurrentPosition(
+    (pos) => handleSearch(`${pos.coords.latitude},${pos.coords.longitude}`),
+    () => hideLoading(),
+    { timeout: 5000 }
+  );
+}
+
 async function handleSearch(query) {
   hideError();
   showLoading();
