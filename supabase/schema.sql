@@ -90,7 +90,7 @@ ALTER TABLE "usuario_panel_control"
     ADD FOREIGN KEY ("privilegio_id") REFERENCES "privilegio"("id");
 
 ALTER TABLE "usuario_panel_control"
-    ADD FOREIGN KEY ("user_id") REFERENCES "auth.users"("id") ON DELETE CASCADE;
+    ADD FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 ALTER TABLE "modera_pais"
     ADD FOREIGN KEY ("id_privilegio") REFERENCES "privilegio"("id");
@@ -113,28 +113,37 @@ ALTER TABLE "modera_pais"         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "api_links"           ENABLE ROW LEVEL SECURITY;
 
 -- Public read for reference data
+DROP POLICY IF EXISTS "Public read" ON "pais";
 CREATE POLICY "Public read" ON "pais"
     FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public read" ON "estado_Com_autonom";
 CREATE POLICY "Public read" ON "estado_Com_autonom"
     FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public read" ON "ciudad";
 CREATE POLICY "Public read" ON "ciudad"
     FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public read" ON "privilegio";
 CREATE POLICY "Public read" ON "privilegio"
     FOR SELECT USING (true);
 
 -- Users can see / update only their own row
+DROP POLICY IF EXISTS "Own select" ON "usuario_panel_control";
 CREATE POLICY "Own select" ON "usuario_panel_control"
     FOR SELECT USING (auth.uid() = "user_id");
+DROP POLICY IF EXISTS "Own insert" ON "usuario_panel_control";
 CREATE POLICY "Own insert" ON "usuario_panel_control"
     FOR INSERT WITH CHECK (auth.uid() = "user_id");
+DROP POLICY IF EXISTS "Own update" ON "usuario_panel_control";
 CREATE POLICY "Own update" ON "usuario_panel_control"
     FOR UPDATE USING (auth.uid() = "user_id");
 
 -- API keys: only authenticated users may read
+DROP POLICY IF EXISTS "Auth read" ON "api_links";
 CREATE POLICY "Auth read" ON "api_links"
     FOR SELECT USING (auth.role() = 'authenticated');
 
 -- modera_pais: admin-only management
+DROP POLICY IF EXISTS "Admin all" ON "modera_pais";
 CREATE POLICY "Admin all" ON "modera_pais"
     FOR ALL USING (
         EXISTS (
@@ -162,24 +171,24 @@ INSERT INTO "pais" ("nombre", "url_bandera") VALUES
 
 -- States / autonomous communities
 INSERT INTO "estado_Com_autonom" ("nombre", "id_pais") VALUES
-    ('Andalucía',            1),
-    ('Comunidad de Madrid',  1),
-    ('Cataluña',             1),
-    ('CDMX',                 2),
-    ('Jalisco',              2);
+    ('Andalucía',            (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
+    ('Comunidad de Madrid',  (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
+    ('Cataluña',             (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
+    ('CDMX',                 (SELECT "id" FROM "pais" WHERE "nombre" = 'México')),
+    ('Jalisco',              (SELECT "id" FROM "pais" WHERE "nombre" = 'México'));
 
 -- Cities — Sevilla is the placeholder city
 INSERT INTO "ciudad" ("nombreciudad", "url_bandera", "id_estado") VALUES
-    ('Sevilla',             'https://flagcdn.com/w320/es.png', 1),
-    ('Málaga',              NULL, 1),
-    ('Madrid',              NULL, 2),
-    ('Barcelona',           NULL, 3),
-    ('Ciudad de México',    NULL, 4),
-    ('Guadalajara',         NULL, 5);
+    ('Sevilla',             'https://flagcdn.com/w320/es.png', (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Andalucía')),
+    ('Málaga',              NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Andalucía')),
+    ('Madrid',              NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Comunidad de Madrid')),
+    ('Barcelona',           NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Cataluña')),
+    ('Ciudad de México',    NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'CDMX')),
+    ('Guadalajara',         NULL, (SELECT "id" FROM "estado_Com_autonom" WHERE "nombre" = 'Jalisco'));
 
 -- API links (replace YOUR_*_KEY with real keys in production)
 INSERT INTO "api_links" ("url", "id_pais") VALUES
-    ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', 1),
-    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', 1),
-    ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', 2),
-    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', 2);
+    ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
+    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', (SELECT "id" FROM "pais" WHERE "nombre" = 'España')),
+    ('https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY&q={lat},{lng}', (SELECT "id" FROM "pais" WHERE "nombre" = 'México')),
+    ('https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid=YOUR_OWM_KEY&units=metric', (SELECT "id" FROM "pais" WHERE "nombre" = 'México'));
