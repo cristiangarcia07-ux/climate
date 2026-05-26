@@ -1,0 +1,89 @@
+CLIMATE CHECKER — BUILD PLAN
+=============================
+
+WHAT: A mobile-first, static climate checker for GitHub Pages that
+fetches from 3 APIs and shows an aggregate/consensus forecast.
+
+APIS:
+  1. Open-Meteo   — no API key needed
+  2. WeatherAPI   — key in config.js (gitignored)
+  3. OpenWeatherMap — key in config.js (gitignored)
+
+STACK: Vanilla HTML/CSS/JS — no build tools, pure static files.
+
+UNITS: Celsius / metric
+
+LOCATION: City search + geolocation button.
+          Geocoding via Open-Meteo free geocoding API (no key).
+
+DATABASE (Supabase):
+  schema.sql              — full DDL + seed data + RLS + pgcrypto
+  Tables:
+    pais                  — countries (id, nombre, url_bandera)
+    estado_Com_autonom    — states / autonomous communities (id, nombre, id_pais)
+    ciudad                — cities (id, nombreciudad, url_bandera, id_estado)
+    privilegio            — roles: admin / editor / viewer (id, nombre)
+    usuario_panel_control — linked to auth.users via user_id UUID (no password column)
+    modera_pais           — many-to-many: which roles moderate which countries
+    api_links             — weather API endpoints stored per country (keys in DB, not in JS)
+
+  Auth: Supabase Auth handles passwords with server-side bcrypt.
+  RLS:  Public read on reference tables; authenticated-only for api_links;
+        owner-only for usuario_panel_control; admin-only for modera_pais.
+
+FILE STRUCTURE:
+  index.html              — main page (single HTML file)
+  css/style.css           — mobile-first responsive CSS
+  js/app.js               — main orchestrator, event wiring
+  js/geocode.js           — city name → lat/lng via Open-Meteo geocoding
+  js/config.js            — Supabase anon key + URL only (gitignored)
+  js/config.example.js    — placeholder template for config.js (committed)
+  js/supabase.js          — Supabase client init + auth (signup/login/logout/session)
+  js/api_loader.js        — fetches weather API keys from Supabase api_links after auth
+  js/apis/openmeteo.js    — fetch wrapper for Open-Meteo
+  js/apis/weatherapi.js   — fetch wrapper for WeatherAPI
+  js/apis/openweather.js  — fetch wrapper for OpenWeatherMap
+  js/aggregator.js        — averages temperatures, humidity, wind, UV
+  js/ui.js                — renders DOM, handles loading/error states
+  .gitignore              — ignores config.js
+
+HOW KEYS WORK:
+  - API keys live in Supabase api_links table, NOT in client-side JS.
+  - config.js only holds Supabase anon key + project URL (gitignored).
+  - On load, user authenticates → supabase.js fetches keys from api_links → api_loader.js
+    makes them available to the weather fetchers.
+  - The deployed GH Pages site shows a login/signup form if unauthenticated.
+
+DATA FLOW:
+  User types city (or clicks "📍 Detect")
+    → geocode.js resolves to lat/lng
+    → Promise.all([ openmeteo.fetch(), weatherapi.fetch(), openweather.fetch() ])
+    → aggregator averages temperature, feels-like, humidity, wind, UV
+    → ui.js renders:
+        - Consensus card (averaged values)
+        - 3 individual API cards below (raw data)
+        - Any failed APIs show error state
+
+  Panel auth flow:
+    Login/Signup → supabase.auth.signIn/signUp (bcrypt server-side)
+    → session stored by Supabase JS client
+    → api_loader.js reads api_links for the user's country
+    → weather fetchers use those keys
+
+UI LAYOUT (mobile-first):
+  Mobile (<640px): single column stack
+    [Search bar]
+    [Consensus card]
+    [Open-Meteo card]
+    [WeatherAPI card]
+    [OpenWeather card]
+
+  Tablet+ (≥768px): responsive grid
+    [Search bar — full width]
+    [Consensus] [Open-Meteo] [WeatherAPI]
+    [OpenWeather — full width or column-span]
+
+COLOR SCHEME:
+  - Clean white/gray background
+  - Accent color based on temperature (cool blue → warm orange)
+  - Subtle card shadows
