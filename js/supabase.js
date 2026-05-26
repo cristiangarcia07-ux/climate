@@ -1,0 +1,43 @@
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+
+const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+export async function signUp(email, password) {
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) throw error;
+
+  if (data.user) {
+    const { error: profileError } = await supabase.from('usuario_panel_control').insert({
+      user_id: data.user.id,
+      email: data.user.email,
+      privilegio_id: 3
+    });
+    if (profileError && profileError.code !== '23505') throw profileError;
+  }
+
+  return data;
+}
+
+export async function signIn(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data;
+}
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+}
+
+export function onAuthStateChanged(callback) {
+  return supabase.auth.onAuthStateChange((event, session) => {
+    callback(session?.user ?? null);
+  });
+}
+
+export async function getCurrentUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}

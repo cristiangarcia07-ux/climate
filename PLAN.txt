@@ -40,12 +40,12 @@ FILE STRUCTURE:
   js/config.example.js    — placeholder template for config.js (committed)
   js/supabase.js          — Supabase client init + auth (signup/login/logout/session)
   js/api_loader.js        — fetches weather API keys from Supabase api_links after auth
-  js/apis/openmeteo.js    — fetch wrapper for Open-Meteo
-  js/apis/weatherapi.js   — fetch wrapper for WeatherAPI
-  js/apis/openweather.js  — fetch wrapper for OpenWeatherMap
-  js/aggregator.js        — averages temperatures, humidity, wind, UV
-  js/ui.js                — renders DOM, handles loading/error states
-  .gitignore              — ignores config.js
+  js/apis/openmeteo.js    — fetch wrapper for Open-Meteo (no key needed)
+  js/apis/weatherapi.js   — fetch wrapper for WeatherAPI (key from api_links)
+  js/apis/openweather.js  — fetch wrapper for OpenWeatherMap (key from api_links)
+  js/aggregator.js        — averages temperatures, humidity, wind, UV + weather code mapping
+  js/ui.js                — renders auth form, app shell, results cards
+  .gitignore              — ignores js/config.js + supabase/seed_keys.sql
 
 HOW KEYS WORK:
   - API keys live in Supabase api_links table, NOT in client-side JS.
