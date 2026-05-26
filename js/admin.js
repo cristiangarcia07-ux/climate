@@ -1,43 +1,45 @@
-import { supabase, onSessionChange, getSession } from './supabase.js';
+import { supabase } from './supabase.js';
 import { renderAuth, renderConfirmEmail, renderAdminApp } from './ui.js';
 
 const appEl = document.getElementById('app');
-let rendered = false;
 
-async function init() {
-  const session = await getSession();
-  if (session?.user) {
-    rendered = true;
-    renderAdminApp(appEl, session.user, handleLogout);
-  } else {
-    renderAuth(appEl, handleLogin, handleSignup);
-  }
+async function start() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
 
-  onSessionChange((user) => {
-    if (user) {
-      rendered = true;
-      renderAdminApp(appEl, user, handleLogout);
+    if (session?.user) {
+      showAdmin(session.user);
     } else {
-      rendered = false;
-      renderAuth(appEl, handleLogin, handleSignup);
+      showAuth();
     }
+
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        showAdmin(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        showAuth();
+      }
+    });
+  } catch (err) {
+    appEl.innerHTML = `<div class="auth-card"><p class="error">${err.message}</p></div>`;
+  }
+}
+
+function showAdmin(user) {
+  renderAdminApp(appEl, user, async () => {
+    await supabase.auth.signOut();
   });
 }
 
-init();
-
-async function handleLogin(email, password) {
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
+function showAuth() {
+  renderAuth(appEl, async (email, password) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  }, async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+  });
 }
 
-async function handleSignup(email, password) {
-  const data = await supabase.auth.signUp({ email, password });
-  if (data.error) throw data.error;
-  return data;
-}
-
-async function handleLogout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
+start();
