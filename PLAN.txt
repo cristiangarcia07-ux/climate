@@ -17,7 +17,7 @@ LOCATION: City search + geolocation button.
           Geocoding via Open-Meteo free geocoding API (no key).
 
 DATABASE (Supabase):
-  schema.sql              — full DDL + seed data + RLS + pgcrypto
+  supabase/schema.sql     — full DDL + seed data + RLS + pgcrypto
   Tables:
     pais                  — countries (id, nombre, url_bandera)
     estado_Com_autonom    — states / autonomous communities (id, nombre, id_pais)
