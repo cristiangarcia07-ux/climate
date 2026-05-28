@@ -218,6 +218,10 @@ export function renderResults(consensus, sources, geo) {
     ? getTempColor(consensus.temperature)
     : '#666';
 
+  const flagUrl = geo?.countryCode
+    ? `https://flagcdn.com/w320/${geo.countryCode.toLowerCase()}.png`
+    : '';
+
   const flagHtml = geo?.countryCode
     ? `<img src="https://flagcdn.com/w80/${geo.countryCode.toLowerCase()}.png" class="result-flag" alt="${geo.country || ''}">`
     : '';
@@ -227,7 +231,7 @@ export function renderResults(consensus, sources, geo) {
     : '';
 
   resultsEl.innerHTML = `
-    <div class="card consensus-card" style="--accent: ${tempColor}; animation-delay: 0s">
+    <div class="card consensus-card" style="--accent: ${tempColor}; --flag-bg: url('${flagUrl}'); animation-delay: 0s">
       <div class="consensus-header">
         ${flagHtml}${locationHtml}
       </div>

@@ -10,6 +10,7 @@ import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hi
 const REFRESH_MS = 180000;
 let refreshTimer = null;
 let lastQuery = null;
+let lastGeo = null;
 
 const appEl = document.getElementById('app');
 renderPublicApp(appEl, handleSearch);
@@ -35,8 +36,9 @@ async function detectLocation() {
 
 async function handleSearch(query, silent = false, geo = null) {
   lastQuery = query;
+  if (geo) lastGeo = geo;
   clearInterval(refreshTimer);
-  refreshTimer = setInterval(() => { if (lastQuery) handleSearch(lastQuery, true); }, REFRESH_MS);
+  refreshTimer = setInterval(() => { if (lastQuery) handleSearch(lastQuery, true, lastGeo); }, REFRESH_MS);
 
   hideError();
   if (!silent) {
@@ -54,6 +56,7 @@ async function handleSearch(query, silent = false, geo = null) {
       lat = g.lat;
       lng = g.lng;
       geo = g;
+      lastGeo = g;
     }
 
     const keys = await fetchApiKeys(1);
@@ -69,7 +72,7 @@ async function handleSearch(query, silent = false, geo = null) {
     const consensus = aggregate(fulfilled);
 
     if (!silent) hideLoading();
-    renderResults(consensus, fulfilled, geo);
+    renderResults(consensus, fulfilled, geo || lastGeo);
   } catch (err) {
     if (!silent) hideLoading();
     if (!silent) showError(err.message);

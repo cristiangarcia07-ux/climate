@@ -466,12 +466,24 @@ header h1 {
   pointer-events: none;
 }
 
+.consensus-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--flag-bg) no-repeat center / cover;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .consensus-card h2 {
   font-size: 0.8rem;
   color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 3px;
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .consensus-header {
@@ -479,6 +491,8 @@ header h1 {
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
 }
 
 .result-flag {
@@ -503,12 +517,19 @@ header h1 {
   color: #fff;
   text-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
   animation: iridescent 10s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
+}
+
+.consensus-card .stats {
+  position: relative;
+  z-index: 1;
 }
 
 .stat {
@@ -550,6 +571,8 @@ header h1 {
   font-size: 0.65rem;
   color: #444466;
   letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 .source-card h3 {
