@@ -9,8 +9,10 @@ export async function geocode(city) {
   }
 
   const r = data.results[0];
+  const names = [...new Set(data.results.map(r => r.name))];
   return {
     name: r.name,
+    names,
     country: r.country,
     countryCode: r.country_code,
     lat: r.latitude,
@@ -29,8 +31,10 @@ export async function reverseGeocode(lat, lng) {
   const data = await res.json();
   const address = data.address || {};
 
+  const cityName = address.city || address.town || address.village || address.municipality || '';
   return {
-    name: address.city || address.town || address.village || address.municipality || '',
+    name: cityName,
+    names: [cityName],
     country: address.country || '',
     countryCode: (address.country_code || '').toLowerCase(),
     lat,

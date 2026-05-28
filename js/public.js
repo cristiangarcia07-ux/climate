@@ -60,13 +60,17 @@ async function handleSearch(query, silent = false, geo = null) {
     }
 
     if (geo) {
-      const { data: cities } = await supabase
-        .from('ciudad')
-        .select('url_bandera')
-        .ilike('nombreciudad', geo.name);
-      if (cities?.length && cities[0].url_bandera) {
-        geo.flagUrl = cities[0].url_bandera;
-      } else {
+      try {
+        const { data: cities } = await supabase
+          .from('ciudad')
+          .select('url_bandera')
+          .in('nombreciudad', geo.names || [geo.name])
+          .not('url_bandera', 'is', null)
+          .limit(1);
+        geo.flagUrl = cities?.length
+          ? cities[0].url_bandera
+          : `https://flagcdn.com/w320/${geo.countryCode.toLowerCase()}.png`;
+      } catch {
         geo.flagUrl = `https://flagcdn.com/w320/${geo.countryCode.toLowerCase()}.png`;
       }
     }
