@@ -48,12 +48,12 @@ function showAuth() {
 async function checkAdmin() {
   const { data, error } = await supabase
     .from('usuario_panel_control')
-    .select('privilegio_id')
+    .select('privilegio_id, aprobado')
     .eq('user_id', currentUser.id)
     .single();
 
   if (error || !data) return false;
-  return data.privilegio_id === 1;
+  return data.privilegio_id === 1 && data.aprobado === true;
 }
 
 async function showAdmin() {
@@ -155,7 +155,9 @@ const userHandlers = {
     return { users, privilegios };
   },
   onChangeRole: (userId, privilegioId) =>
-    supabase.from('usuario_panel_control').update({ privilegio_id: privilegioId }).eq('user_id', userId).then(r => { if (r.error) throw r.error; })
+    supabase.from('usuario_panel_control').update({ privilegio_id: privilegioId }).eq('user_id', userId).then(r => { if (r.error) throw r.error; }),
+  onApprove: (userId) =>
+    supabase.from('usuario_panel_control').update({ aprobado: true }).eq('user_id', userId).then(r => { if (r.error) throw r.error; })
 };
 
 start();

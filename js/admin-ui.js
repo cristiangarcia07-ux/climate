@@ -422,7 +422,7 @@ export function renderUsersSection(handlers) {
       <h2>Users</h2>
     </div>
     <table class="admin-table">
-      <thead><tr><th>User ID</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+      <thead><tr><th>User ID</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody id="user-tbody"></tbody>
     </table>
   `;
@@ -431,16 +431,18 @@ export function renderUsersSection(handlers) {
 
 async function loadUserList(handlers) {
   const tbody = document.getElementById('user-tbody');
-  tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
   try {
     const { users, privilegios } = await handlers.fetch();
     const roleMap = Object.fromEntries(privilegios.map(p => [p.id, p.nombre]));
     tbody.innerHTML = users.map(u => `
-      <tr>
+      <tr class="${u.aprobado ? '' : 'row-pending'}">
         <td>${u.user_id.substring(0, 8)}...</td>
         <td>${u.email}</td>
         <td>${roleMap[u.privilegio_id] || u.privilegio_id}</td>
+        <td>${u.aprobado ? '<span class="badge-approved">Approved</span>' : '<span class="badge-pending">Pending</span>'}</td>
         <td class="actions">
+          ${!u.aprobado ? `<button class="btn btn-sm btn-approve" data-user="${u.user_id}">Approve</button>` : ''}
           <select class="role-select" data-user="${u.user_id}">
             ${privilegios.map(p => `<option value="${p.id}" ${p.id === u.privilegio_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
           </select>
@@ -461,7 +463,17 @@ async function loadUserList(handlers) {
         }
       });
     });
+    tbody.querySelectorAll('.btn-approve').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await handlers.onApprove(btn.dataset.user);
+          loadUserList(handlers);
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="4">Error: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5">Error: ${err.message}</td></tr>`;
   }
 }

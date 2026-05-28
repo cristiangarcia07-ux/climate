@@ -674,6 +674,33 @@ header h1 {
   color: #c0c0d0;
 }
 
+.row-pending td {
+  background: rgba(255, 255, 0, 0.03);
+}
+
+.badge-approved {
+  color: #00ff88;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.badge-pending {
+  color: #ffaa00;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-approve {
+  border-color: #00ff88;
+  color: #00ff88;
+}
+
+.btn-approve:hover {
+  background: rgba(0, 255, 136, 0.15);
+}
+
 @media (max-width: 640px) {
   .admin-nav {
     gap: 2px;
