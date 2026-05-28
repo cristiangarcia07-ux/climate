@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js';
-import { geocode } from './geocode.js';
+import { geocode, reverseGeocode } from './geocode.js';
 import { fetchWeather as fetchOM } from './apis/openmeteo.js';
 import { fetchWeather as fetchWA } from './apis/weatherapi.js';
 import { fetchWeather as fetchOW } from './apis/openweather.js';
@@ -16,17 +16,24 @@ renderPublicApp(appEl, handleSearch);
 
 detectLocation();
 
-function detectLocation() {
+async function detectLocation() {
   if (!navigator.geolocation) return;
   showLoading();
   navigator.geolocation.getCurrentPosition(
-    (pos) => handleSearch(`${pos.coords.latitude},${pos.coords.longitude}`),
+    async (pos) => {
+      try {
+        const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+        handleSearch(`${geo.lat},${geo.lng}`, false, geo);
+      } catch {
+        handleSearch(`${pos.coords.latitude},${pos.coords.longitude}`);
+      }
+    },
     () => hideLoading(),
     { timeout: 5000 }
   );
 }
 
-async function handleSearch(query, silent = false) {
+async function handleSearch(query, silent = false, geo = null) {
   lastQuery = query;
   clearInterval(refreshTimer);
   refreshTimer = setInterval(() => { if (lastQuery) handleSearch(lastQuery, true); }, REFRESH_MS);
@@ -43,9 +50,10 @@ async function handleSearch(query, silent = false) {
       lat = parseFloat(parts[0]);
       lng = parseFloat(parts[1]);
     } else {
-      const geo = await geocode(query);
-      lat = geo.lat;
-      lng = geo.lng;
+      const g = await geocode(query);
+      lat = g.lat;
+      lng = g.lng;
+      geo = g;
     }
 
     const keys = await fetchApiKeys(1);
@@ -61,7 +69,7 @@ async function handleSearch(query, silent = false) {
     const consensus = aggregate(fulfilled);
 
     if (!silent) hideLoading();
-    renderResults(consensus, fulfilled);
+    renderResults(consensus, fulfilled, geo);
   } catch (err) {
     if (!silent) hideLoading();
     if (!silent) showError(err.message);

@@ -474,6 +474,28 @@ header h1 {
   margin-bottom: 12px;
 }
 
+.consensus-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.result-flag {
+  width: 40px;
+  height: 26px;
+  object-fit: cover;
+  border: 1px solid #1a1a2e;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.result-location {
+  font-size: 0.75rem;
+  color: #8888bb;
+  letter-spacing: 1px;
+}
+
 .temp-large {
   font-size: 3.2rem;
   font-weight: 400;

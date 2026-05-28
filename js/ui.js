@@ -204,7 +204,7 @@ export function hideError() {
   if (el) el.classList.add('hidden');
 }
 
-export function renderResults(consensus, sources) {
+export function renderResults(consensus, sources, geo) {
   const resultsEl = document.getElementById('results');
   const sourcesEl = document.getElementById('sources');
 
@@ -218,8 +218,19 @@ export function renderResults(consensus, sources) {
     ? getTempColor(consensus.temperature)
     : '#666';
 
+  const flagHtml = geo?.countryCode
+    ? `<img src="https://flagcdn.com/w80/${geo.countryCode.toLowerCase()}.png" class="result-flag" alt="${geo.country || ''}">`
+    : '';
+
+  const locationHtml = geo?.name
+    ? `<span class="result-location">${geo.name}${geo.country ? ', ' + geo.country : ''}</span>`
+    : '';
+
   resultsEl.innerHTML = `
     <div class="card consensus-card" style="--accent: ${tempColor}; animation-delay: 0s">
+      <div class="consensus-header">
+        ${flagHtml}${locationHtml}
+      </div>
       <h2>Consensus</h2>
       <div class="temp-large">${formatTemp(consensus.temperature)}</div>
       <div class="stats">

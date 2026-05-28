@@ -18,3 +18,23 @@ export async function geocode(city) {
     timezone: r.timezone
   };
 }
+
+export async function reverseGeocode(lat, lng) {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`;
+  const res = await fetch(url, {
+    headers: { 'Accept-Language': 'en', 'User-Agent': 'ClimateChecker/1.0' }
+  });
+  if (!res.ok) throw new Error('Reverse geocoding failed');
+
+  const data = await res.json();
+  const address = data.address || {};
+
+  return {
+    name: address.city || address.town || address.village || address.municipality || '',
+    country: address.country || '',
+    countryCode: (address.country_code || '').toLowerCase(),
+    lat,
+    lng,
+    timezone: ''
+  };
+}
