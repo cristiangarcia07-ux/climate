@@ -6,6 +6,10 @@ import { fetchWeather as fetchOW } from './apis/openweather.js';
 import { aggregate } from './aggregator.js';
 import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
 
+const REFRESH_MS = 180000;
+let refreshTimer = null;
+let lastQuery = null;
+
 const appEl = document.getElementById('app');
 renderPublicApp(appEl, handleSearch);
 
@@ -21,9 +25,15 @@ function detectLocation() {
   );
 }
 
-async function handleSearch(query) {
+async function handleSearch(query, silent = false) {
+  lastQuery = query;
+  clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => { if (lastQuery) handleSearch(lastQuery, true); }, REFRESH_MS);
+
   hideError();
-  showLoading();
+  if (!silent) {
+    showLoading();
+  }
 
   try {
     let lat, lng;
@@ -48,11 +58,11 @@ async function handleSearch(query) {
     const fulfilled = results.map(r => r.status === 'fulfilled' ? r.value : null);
     const consensus = aggregate(fulfilled);
 
-    hideLoading();
+    if (!silent) hideLoading();
     renderResults(consensus, fulfilled);
   } catch (err) {
-    hideLoading();
-    showError(err.message);
+    if (!silent) hideLoading();
+    if (!silent) showError(err.message);
   }
 }
 
