@@ -21,11 +21,33 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 255, 136, 0.015) 50%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 0;
+  animation: scanline 6s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
 }
 
 #app {
@@ -36,17 +58,48 @@ body::before {
   z-index: 1;
 }
 
+/* ===== HOLOGRAPHIC KEYFRAMES ===== */
+@keyframes holographic-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes iridescent {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(30deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.2); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes holographic-border {
+  0% { border-color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.15), 0 0 40px rgba(0, 255, 136, 0.05); }
+  25% { border-color: #00ffbb; box-shadow: 0 0 20px rgba(0, 255, 187, 0.2), 0 0 40px rgba(0, 255, 187, 0.08); }
+  50% { border-color: #00ff55; box-shadow: 0 0 25px rgba(0, 255, 85, 0.2), 0 0 50px rgba(0, 255, 85, 0.08); }
+  75% { border-color: #00ffbb; box-shadow: 0 0 20px rgba(0, 255, 187, 0.2), 0 0 40px rgba(0, 255, 187, 0.08); }
+  100% { border-color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.15), 0 0 40px rgba(0, 255, 136, 0.05); }
+}
+
 /* ===== AUTH CARD ===== */
 .auth-card {
   max-width: 380px;
   margin: 80px auto;
   background: #101018;
-  border: 1px solid #00ffff;
+  border: 1px solid #00ff88;
   border-radius: 4px;
   padding: 32px;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15), inset 0 0 20px rgba(0, 255, 255, 0.03);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.15), inset 0 0 20px rgba(0, 255, 136, 0.03);
   text-align: center;
   position: relative;
+  animation: holographic-border 4s ease-in-out infinite;
 }
 
 .auth-card::before {
@@ -58,17 +111,34 @@ body::before {
   background: #0a0a0f;
   padding: 0 12px;
   font-size: 0.7rem;
-  color: #00ffff;
+  color: #00ff88;
   letter-spacing: 4px;
+}
+
+.auth-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent, rgba(0, 255, 136, 0.05), rgba(0, 255, 200, 0.08),
+    rgba(255, 0, 255, 0.05), transparent
+  );
+  background-size: 200% 100%;
+  animation: holographic-shimmer 4s linear infinite;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .auth-card h2 {
   margin-bottom: 24px;
   font-size: 1.2rem;
-  color: #00ffff;
+  color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 3px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  animation: iridescent 6s ease-in-out infinite;
 }
 
 .auth-card input {
@@ -78,7 +148,7 @@ body::before {
   background: #0a0a0f;
   border: 1px solid #333;
   border-radius: 2px;
-  color: #00ff88;
+  color: #00ffaa;
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
@@ -86,8 +156,8 @@ body::before {
 }
 
 .auth-card input:focus {
-  border-color: #00ffff;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+  border-color: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
 }
 
 .auth-buttons {
@@ -111,12 +181,12 @@ body::before {
 
 #btn-login {
   background: transparent;
-  color: #00ffff;
-  border-color: #00ffff;
+  color: #00ff88;
+  border-color: #00ff88;
 }
 #btn-login:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
 }
 
 #btn-signup {
@@ -144,7 +214,7 @@ body::before {
   margin: 10px auto 0;
   background: none;
   border: none;
-  color: #00ffff;
+  color: #00ff88;
   font-family: inherit;
   font-size: 0.8rem;
   cursor: pointer;
@@ -174,15 +244,18 @@ header::after {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #00ffff, #ff00ff, transparent);
+  background: linear-gradient(90deg, transparent, #00ff88, #ff00ff, transparent);
+  background-size: 200% 100%;
+  animation: holographic-shimmer 3s linear infinite;
 }
 
 header h1 {
   font-size: 1.1rem;
-  color: #00ffff;
+  color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 4px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  animation: iridescent 8s ease-in-out infinite;
 }
 
 .header-right {
@@ -239,15 +312,15 @@ header h1 {
   background: #0a0a0f;
   border: 1px solid #1a1a2e;
   border-radius: 2px;
-  color: #00ff88;
+  color: #00ffaa;
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
   transition: all 0.2s;
 }
 .search-bar input:focus {
-  border-color: #00ffff;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+  border-color: #00ff88;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
 }
 .search-bar input::placeholder {
   color: #333355;
@@ -255,10 +328,10 @@ header h1 {
 
 .search-bar button {
   padding: 14px 22px;
-  border: 1px solid #00ffff;
+  border: 1px solid #00ff88;
   border-radius: 2px;
   background: transparent;
-  color: #00ffff;
+  color: #00ff88;
   font-family: inherit;
   font-size: 0.85rem;
   cursor: pointer;
@@ -267,8 +340,8 @@ header h1 {
   transition: all 0.2s;
 }
 .search-bar button:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.25);
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.25);
 }
 
 #btn-geolocate {
@@ -295,15 +368,10 @@ header h1 {
 }
 
 .loading {
-  border: 1px solid #00ffff;
-  color: #00ffff;
-  background: rgba(0, 255, 255, 0.03);
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.03);
+  animation: pulse-glow 1.5s ease-in-out infinite;
 }
 
 .error {
@@ -324,15 +392,33 @@ header h1 {
   padding: 24px;
   margin-bottom: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
-  border-color: #2a2a4e;
+  border-color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
+}
+
+.card:hover::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent, rgba(0, 255, 136, 0.04), rgba(0, 255, 200, 0.06),
+    rgba(255, 0, 255, 0.04), transparent
+  );
+  background-size: 200% 100%;
+  animation: holographic-shimmer 3s linear infinite;
+  pointer-events: none;
 }
 
 .consensus-card {
-  border-left: 3px solid var(--accent, #00ffff);
+  border-left: 3px solid var(--accent, #00ff88);
   position: relative;
   overflow: hidden;
 }
@@ -344,13 +430,13 @@ header h1 {
   right: 0;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, rgba(0, 255, 255, 0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 255, 136, 0.03) 0%, transparent 70%);
   pointer-events: none;
 }
 
 .consensus-card h2 {
   font-size: 0.8rem;
-  color: #00ffff;
+  color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 3px;
   margin-bottom: 12px;
@@ -361,7 +447,8 @@ header h1 {
   font-weight: 400;
   margin-bottom: 16px;
   color: #fff;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+  animation: iridescent 10s ease-in-out infinite;
 }
 
 .stats {
@@ -393,7 +480,7 @@ header h1 {
 .stat-value {
   font-size: 1.1rem;
   font-weight: 400;
-  color: #00ff88;
+  color: #00ffaa;
 }
 
 .condition {
@@ -500,10 +587,10 @@ header h1 {
 }
 
 .tab-btn.active {
-  color: #00ffff;
-  border-color: #00ffff;
-  background: rgba(0, 255, 255, 0.03);
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  color: #00ff88;
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.03);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
 }
 
 .admin-content {
@@ -545,13 +632,13 @@ header h1 {
 }
 
 .btn-primary {
-  border-color: #00ffff;
-  color: #00ffff;
+  border-color: #00ff88;
+  color: #00ff88;
 }
 
 .btn-primary:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
 }
 
 .btn-sm {
@@ -587,8 +674,8 @@ header h1 {
 .admin-table th {
   text-align: left;
   padding: 10px 8px;
-  border-bottom: 1px solid #00ffff;
-  color: #00ffff;
+  border-bottom: 1px solid #00ff88;
+  color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 0.7rem;
@@ -602,7 +689,7 @@ header h1 {
 }
 
 .admin-table tr:hover td {
-  background: rgba(0, 255, 255, 0.02);
+  background: rgba(0, 255, 136, 0.02);
 }
 
 .admin-table .actions {
@@ -627,16 +714,32 @@ header h1 {
 
 .inline-form {
   background: #101018;
-  border: 1px solid #00ffff;
+  border: 1px solid #00ff88;
   border-radius: 4px;
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 0 0 16px rgba(0, 255, 255, 0.08);
+  box-shadow: 0 0 16px rgba(0, 255, 136, 0.08);
+  position: relative;
+}
+
+.inline-form::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent, rgba(0, 255, 136, 0.04), rgba(0, 255, 200, 0.06),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: holographic-shimmer 4s linear infinite;
+  pointer-events: none;
 }
 
 .inline-form h3 {
   font-size: 0.9rem;
-  color: #00ffff;
+  color: #00ff88;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 16px;
@@ -650,7 +753,7 @@ header h1 {
   background: #0a0a0f;
   border: 1px solid #333;
   border-radius: 2px;
-  color: #00ff88;
+  color: #00ffaa;
   font-family: inherit;
   font-size: 0.85rem;
   outline: none;
@@ -659,8 +762,8 @@ header h1 {
 
 .inline-form input:focus,
 .inline-form select:focus {
-  border-color: #00ffff;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+  border-color: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.15);
 }
 
 .inline-form select {
