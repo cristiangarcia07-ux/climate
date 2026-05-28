@@ -219,7 +219,7 @@ export function renderResults(consensus, sources) {
     : '#666';
 
   resultsEl.innerHTML = `
-    <div class="card consensus-card" style="--accent: ${tempColor}">
+    <div class="card consensus-card" style="--accent: ${tempColor}; animation-delay: 0s">
       <h2>Consensus</h2>
       <div class="temp-large">${formatTemp(consensus.temperature)}</div>
       <div class="stats">
@@ -244,13 +244,13 @@ export function renderResults(consensus, sources) {
     </div>
   `;
 
-  sourcesEl.innerHTML = sources.map(s => {
+  sourcesEl.innerHTML = sources.map((s, i) => {
     if (!s) return '';
     const emoji = s.weatherCode !== undefined
       ? weatherCodeToEmoji(s.weatherCode)
       : '';
     return `
-      <div class="card source-card">
+      <div class="card source-card" style="animation-delay: ${i * 0.08}s">
         <h3>${emoji} ${s.source}</h3>
         <div class="stats">
           <div class="stat">
