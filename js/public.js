@@ -59,6 +59,18 @@ async function handleSearch(query, silent = false, geo = null) {
       lastGeo = g;
     }
 
+    if (geo) {
+      const { data: cities } = await supabase
+        .from('ciudad')
+        .select('url_bandera')
+        .ilike('nombreciudad', geo.name);
+      if (cities?.length && cities[0].url_bandera) {
+        geo.flagUrl = cities[0].url_bandera;
+      } else {
+        geo.flagUrl = `https://flagcdn.com/w320/${geo.countryCode.toLowerCase()}.png`;
+      }
+    }
+
     const keys = await fetchApiKeys(1);
 
     const results = await Promise.allSettled([

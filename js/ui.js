@@ -218,12 +218,10 @@ export function renderResults(consensus, sources, geo) {
     ? getTempColor(consensus.temperature)
     : '#666';
 
-  const flagUrl = geo?.countryCode
-    ? `https://flagcdn.com/w320/${geo.countryCode.toLowerCase()}.png`
-    : '';
+  const flagUrl = geo?.flagUrl || '';
 
-  const flagHtml = geo?.countryCode
-    ? `<img src="https://flagcdn.com/w80/${geo.countryCode.toLowerCase()}.png" class="result-flag" alt="${geo.country || ''}">`
+  const flagHtml = flagUrl
+    ? `<img src="${flagUrl}" class="result-flag" alt="${geo?.country || ''}">`
     : '';
 
   const locationHtml = geo?.name
