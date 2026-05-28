@@ -37,7 +37,7 @@ export function renderPublicApp(container, onSearch) {
   });
 }
 
-export function renderAuth(container, onLogin, onSignup) {
+export function renderAuth(container, onLogin, onSignup, onReset) {
   container.innerHTML = `
     <div class="auth-card">
       <h2>Admin Panel</h2>
@@ -50,6 +50,7 @@ export function renderAuth(container, onLogin, onSignup) {
         </div>
       </form>
       <p id="auth-error" class="error hidden"></p>
+      <button id="btn-forgot" class="link-btn">Forgot password?</button>
       <a href="index.html" class="back-link">&#8592; Back to weather</a>
     </div>
   `;
@@ -88,6 +89,23 @@ export function renderAuth(container, onLogin, onSignup) {
       errEl.classList.remove('hidden');
     }
   });
+
+  document.getElementById('btn-forgot').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value;
+    if (!email) {
+      errEl.textContent = 'Enter your email first';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    errEl.classList.add('hidden');
+    try {
+      await onReset(email);
+      renderResetEmailSent(container, email);
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
+    }
+  });
 }
 
 export function renderConfirmEmail(container, email) {
@@ -99,6 +117,51 @@ export function renderConfirmEmail(container, email) {
       <a href="index.html" class="back-link">&#8592; Back to weather</a>
     </div>
   `;
+}
+
+export function renderResetEmailSent(container, email) {
+  container.innerHTML = `
+    <div class="auth-card">
+      <h2>Check your email</h2>
+      <p>We sent a password reset link to <strong>${email}</strong>.</p>
+      <p class="confirm-hint">Click the link to choose a new password.</p>
+      <a href="admin.html" class="back-link">Back to sign in</a>
+    </div>
+  `;
+}
+
+export function renderNewPasswordForm(container, onUpdate) {
+  container.innerHTML = `
+    <div class="auth-card">
+      <h2>Choose a new password</h2>
+      <form id="reset-form">
+        <input type="password" id="reset-password" placeholder="New password" required minlength="6">
+        <input type="password" id="reset-confirm" placeholder="Confirm password" required minlength="6">
+        <button type="submit" id="btn-reset">Update Password</button>
+      </form>
+      <p id="reset-error" class="error hidden"></p>
+    </div>
+  `;
+
+  const errEl = document.getElementById('reset-error');
+
+  document.getElementById('reset-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pw = document.getElementById('reset-password').value;
+    const confirm = document.getElementById('reset-confirm').value;
+    if (pw !== confirm) {
+      errEl.textContent = 'Passwords do not match';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    errEl.classList.add('hidden');
+    try {
+      await onUpdate(pw);
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
+    }
+  });
 }
 
 export function renderAdminApp(container, user, onLogout) {

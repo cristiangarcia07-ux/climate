@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js';
-import { renderAuth, renderConfirmEmail } from './ui.js';
+import { renderAuth, renderConfirmEmail, renderNewPasswordForm } from './ui.js';
 import {
   renderAdminLayout, renderCountriesSection,
   renderStatesSection, renderCitiesSection,
@@ -27,6 +27,8 @@ async function start() {
       } else if (event === 'SIGNED_OUT') {
         currentUser = null;
         showAuth();
+      } else if (event === 'PASSWORD_RECOVERY') {
+        showNewPassword();
       }
     });
   } catch (err) {
@@ -42,6 +44,19 @@ function showAuth() {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
     return data;
+  }, async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname,
+    });
+    if (error) throw error;
+  });
+}
+
+function showNewPassword() {
+  renderNewPasswordForm(appEl, async (password) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    appEl.innerHTML = `<div class="auth-card"><h2>Password updated</h2><p>Your password has been changed.</p><a href="admin.html" class="back-link">Sign in</a></div>`;
   });
 }
 

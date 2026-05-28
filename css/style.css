@@ -139,6 +139,23 @@ body::before {
   margin-top: 12px;
 }
 
+.link-btn {
+  display: block;
+  margin: 10px auto 0;
+  background: none;
+  border: none;
+  color: #00ffff;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.link-btn:hover {
+  opacity: 1;
+}
+
 /* ===== HEADER ===== */
 header {
   display: flex;
