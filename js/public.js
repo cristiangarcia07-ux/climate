@@ -3,6 +3,7 @@ import { geocode } from './geocode.js';
 import { fetchWeather as fetchOM } from './apis/openmeteo.js';
 import { fetchWeather as fetchWA } from './apis/weatherapi.js';
 import { fetchWeather as fetchOW } from './apis/openweather.js';
+import { fetchWeather as fetchWT } from './apis/wttr.js';
 import { aggregate } from './aggregator.js';
 import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
 
@@ -51,6 +52,7 @@ async function handleSearch(query, silent = false) {
 
     const results = await Promise.allSettled([
       fetchOM(lat, lng),
+      fetchWT(lat, lng),
       keys.weatherapi ? fetchWA(lat, lng, keys.weatherapi) : Promise.reject(new Error('No WeatherAPI key')),
       keys.openweathermap ? fetchOW(lat, lng, keys.openweathermap) : Promise.reject(new Error('No OWM key'))
     ]);
