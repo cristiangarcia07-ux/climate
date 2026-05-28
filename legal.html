@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviso Legal — Climate Checker</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css?v=7">
+  <style>
+    .legal-content { max-width: 720px; margin: 0 auto; padding: 40px 16px; }
+    .legal-content h1 { color: #00ff88; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+    .legal-content h2 { color: #ff00ff; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; margin: 32px 0 12px; }
+    .legal-content p, .legal-content li { color: #8888bb; font-size: 0.85rem; line-height: 1.7; margin-bottom: 8px; }
+    .legal-content ul { padding-left: 20px; }
+    .legal-content a { color: #00ff88; }
+    .legal-content .back-link { display: inline-block; margin-top: 32px; color: #ff00ff; font-size: 0.8rem; letter-spacing: 2px; }
+    .legal-footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #1a1a2e; text-align: center; color: #444466; font-size: 0.7rem; }
+  </style>
+</head>
+<body>
+  <div class="legal-content">
+    <h1>Aviso Legal</h1>
+    <p>En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa:</p>
+
+    <h2>Identificación del Titular</h2>
+    <p>
+      <strong>Responsable:</strong> Cristian García<br>
+      <strong>Email de contacto:</strong> cristiangarcia07@iesamachado.org<br>
+      <strong>Procedencia:</strong> España
+    </p>
+
+    <h2>Finalidad del Sitio Web</h2>
+    <p>
+      Climate Checker es un sitio web que permite consultar información meteorológica actual de distintas ciudades,
+      agregando datos de múltiples fuentes públicas (Open-Meteo, wttr.in, WeatherAPI, OpenWeatherMap).
+      Dispone de un panel de administración protegido por autenticación para la gestión de datos maestros.
+    </p>
+
+    <h2>Propiedad Intelectual</h2>
+    <p>
+      Todos los contenidos del sitio web (texto, diseño, código) son originales del titular, salvo que se indique
+      lo contrario. Los datos meteorológicos mostrados pertenecen a sus respectivas fuentes y se utilizan
+      bajo sus términos de servicio.
+    </p>
+
+    <h1 style="margin-top:48px">Política de Privacidad</h1>
+    <p>
+      De acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD),
+      se informa sobre el tratamiento de los datos personales.
+    </p>
+
+    <h2>Datos Recogidos</h2>
+    <ul>
+      <li><strong>Datos de navegación:</strong> dirección IP, ubicación aproximada (si el usuario concede permiso de geolocalización), consultas de ciudades.</li>
+      <li><strong>Datos de registro (admin):</strong> dirección de correo electrónico y contraseña (almacenada de forma segura por Supabase Auth, nunca en texto plano).</li>
+    </ul>
+
+    <h2>Finalidad del Tratamiento</h2>
+    <ul>
+      <li>Mostrar información meteorológica de la ciudad solicitada.</li>
+      <li>Gestionar el acceso al panel de administración.</li>
+      <li>Mejorar el servicio mediante análisis agregado de búsquedas.</li>
+    </ul>
+
+    <h2>Base Legal</h2>
+    <ul>
+      <li>Consentimiento del usuario (geolocalización, registro).</li>
+      <li>Ejecución de un servicio solicitado por el usuario (consulta meteorológica).</li>
+      <li>Cumplimiento de obligaciones legales.</li>
+    </ul>
+
+    <h2>Destinatarios de los Datos</h2>
+    <p>
+      Los datos se almacenan en <strong>Supabase</strong> (proveedor de base de datos y autenticación en la nube con servidores en EE.UU. y UE).
+      Supabase cumple con el RGPD mediante las Cláusulas Contractuales Tipo (SCC). No se ceden datos a terceros
+      salvo obligación legal.
+    </p>
+
+    <h2>Derechos del Usuario</h2>
+    <p>El usuario puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición
+      mediante correo electrónico a la dirección indicada en el aviso legal. También puede presentar una reclamación
+      ante la Agencia Española de Protección de Datos (AEPD).</p>
+
+    <h2>Conservación de Datos</h2>
+    <p>Los datos de los usuarios registrados se conservan mientras la cuenta esté activa. Los datos de navegación
+      anónimos se conservan por un período máximo de 12 meses.</p>
+
+    <h1 style="margin-top:48px">Política de Cookies</h1>
+    <p>
+      Este sitio web utiliza únicamente cookies técnicas necesarias para el funcionamiento del sistema
+      de autenticación (panel de administración).
+    </p>
+
+    <h2>Cookies Utilizadas</h2>
+    <ul>
+      <li><strong>sb-*-auth-token:</strong> cookie de sesión de Supabase Auth, necesaria para mantener la sesión iniciada en el panel de administración. Se elimina al cerrar sesión o cerrar el navegador.</li>
+    </ul>
+    <p>No se utilizan cookies de terceros ni cookies de seguimiento o publicitarias.</p>
+
+    <h2>Configuración del Navegador</h2>
+    <p>El usuario puede configurar su navegador para rechazar las cookies, si bien esto impedirá el uso del panel de administración. La consulta meteorológica pública no requiere cookies.</p>
+
+    <a href="index.html" class="back-link">&#8592; Volver al clima</a>
+
+    <div class="legal-footer">
+      <p>Climate Checker — Desarrollado con fines educativos. Los datos meteorológicos se proporcionan "tal cual" sin garantía.</p>
+    </div>
+  </div>
+</body>
+</html>

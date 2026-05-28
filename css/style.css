@@ -802,6 +802,26 @@ header h1 {
   text-overflow: ellipsis;
 }
 
+.site-footer {
+  text-align: center;
+  padding: 24px 16px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.site-footer a {
+  color: #444466;
+  font-size: 0.7rem;
+  text-decoration: none;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.site-footer a:hover {
+  color: #00ff88;
+}
+
 .flag-icon {
   width: 32px;
   height: 20px;
