@@ -55,7 +55,7 @@ async function loadCountryList(handlers) {
       <tr>
         <td>${c.id}</td>
         <td>${c.nombre}</td>
-        <td>${c.url_bandera}</td>
+        <td><img src="${c.url_bandera}" class="flag-icon" alt="${c.nombre}" onerror="this.style.display='none'"></td>
         <td class="actions">
           <button class="btn btn-sm btn-edit" data-id="${c.id}">Edit</button>
           <button class="btn btn-sm btn-delete" data-id="${c.id}">Delete</button>
@@ -249,7 +249,7 @@ async function loadCityList(handlers) {
         <tr>
           <td>${c.id}</td>
           <td>${c.nombreciudad}</td>
-          <td>${c.url_bandera || '-'}</td>
+          <td>${c.url_bandera ? `<img src="${c.url_bandera}" class="flag-icon" alt="${c.nombreciudad}" onerror="this.style.display='none'">` : '-'}</td>
           <td>${est.nombre || c.id_estado}</td>
           <td>${countryMap[est.id_pais] || '-'}</td>
           <td class="actions">

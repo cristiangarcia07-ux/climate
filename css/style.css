@@ -612,12 +612,17 @@ header h1 {
 }
 
 .admin-table .url-cell {
-  max-width: 300px;
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #00ff88;
-  font-size: 0.7rem;
+}
+
+.flag-icon {
+  width: 32px;
+  height: 20px;
+  object-fit: cover;
+  border: 1px solid #1a1a2e;
+  vertical-align: middle;
 }
 
 .inline-form {
