@@ -1,3 +1,5 @@
+import { tickClock } from './ui.js';
+
 export function renderAdminLayout(container, user, onLogout, activeTab, onTabChange) {
   container.innerHTML = `
     <div class="admin-layout">
@@ -5,6 +7,7 @@ export function renderAdminLayout(container, user, onLogout, activeTab, onTabCha
         <h1>Climate Panel</h1>
         <div class="header-right">
           <span class="user-email">${user.email}</span>
+          <span class="live-clock" id="clock"></span>
           <a href="index.html" class="header-link">&#8592; Climate</a>
           <button id="btn-logout" class="btn">Logout</button>
         </div>
@@ -24,6 +27,10 @@ export function renderAdminLayout(container, user, onLogout, activeTab, onTabCha
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => onTabChange(btn.dataset.tab));
   });
+  tickClock();
+  if (!window._clockInterval) {
+    window._clockInterval = setInterval(tickClock, 1000);
+  }
 }
 
 export function renderCountriesSection(handlers) {

@@ -4,7 +4,10 @@ export function renderPublicApp(container, onSearch) {
   container.innerHTML = `
     <header>
       <h1>Climate Checker</h1>
-      <a href="admin.html" class="admin-link">Panel</a>
+      <div class="header-right">
+        <span class="live-clock" id="clock"></span>
+        <a href="admin.html" class="admin-link">Panel</a>
+      </div>
     </header>
     <main>
       <div class="search-bar">
@@ -35,6 +38,13 @@ export function renderPublicApp(container, onSearch) {
       () => showError('Geolocation denied or unavailable')
     );
   });
+  tickClock();
+  setInterval(tickClock, 1000);
+}
+
+export function tickClock() {
+  const el = document.getElementById('clock');
+  if (el) el.textContent = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 }
 
 export function renderAuth(container, onLogin, onSignup, onReset) {

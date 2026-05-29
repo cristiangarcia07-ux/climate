@@ -297,6 +297,14 @@ header h1 {
   letter-spacing: 1px;
 }
 
+.live-clock {
+  font-size: 0.75rem;
+  color: #00ff88;
+  letter-spacing: 2px;
+  min-width: 48px;
+  text-align: right;
+}
+
 .header-link {
   font-size: 0.75rem;
   color: #00ff88;
