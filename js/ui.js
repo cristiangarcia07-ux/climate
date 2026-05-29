@@ -1,4 +1,4 @@
-import { weatherCodeToEmoji } from './aggregator.js';
+import { weatherCodeToEmoji } from './aggregator.js?v=8';
 
 export function renderPublicApp(container, onSearch) {
   container.innerHTML = `

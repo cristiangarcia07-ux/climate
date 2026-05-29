@@ -1,10 +1,10 @@
-import { supabase } from './supabase.js';
-import { renderAuth, renderConfirmEmail, renderNewPasswordForm } from './ui.js';
+import { supabase } from './supabase.js?v=8';
+import { renderAuth, renderConfirmEmail, renderNewPasswordForm } from './ui.js?v=8';
 import {
   renderAdminLayout, renderCountriesSection,
   renderStatesSection, renderCitiesSection,
   renderApiLinksSection, renderUsersSection
-} from './admin-ui.js';
+} from './admin-ui.js?v=8';
 
 const appEl = document.getElementById('app');
 let currentUser = null;

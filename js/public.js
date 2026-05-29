@@ -1,11 +1,11 @@
-import { supabase } from './supabase.js';
-import { geocode, reverseGeocode } from './geocode.js';
-import { fetchWeather as fetchOM } from './apis/openmeteo.js';
-import { fetchWeather as fetchWA } from './apis/weatherapi.js';
-import { fetchWeather as fetchOW } from './apis/openweather.js';
-import { fetchWeather as fetchWT } from './apis/wttr.js';
-import { aggregate } from './aggregator.js';
-import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js';
+import { supabase } from './supabase.js?v=8';
+import { geocode, reverseGeocode } from './geocode.js?v=8';
+import { fetchWeather as fetchOM } from './apis/openmeteo.js?v=8';
+import { fetchWeather as fetchWA } from './apis/weatherapi.js?v=8';
+import { fetchWeather as fetchOW } from './apis/openweather.js?v=8';
+import { fetchWeather as fetchWT } from './apis/wttr.js?v=8';
+import { aggregate } from './aggregator.js?v=8';
+import { renderPublicApp, renderResults, showLoading, hideLoading, showError, hideError } from './ui.js?v=8';
 
 const REFRESH_MS = 180000;
 let refreshTimer = null;

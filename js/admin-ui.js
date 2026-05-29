@@ -1,4 +1,4 @@
-import { tickClock } from './ui.js';
+import { tickClock } from './ui.js?v=8';
 
 export function renderAdminLayout(container, user, onLogout, activeTab, onTabChange) {
   container.innerHTML = `
