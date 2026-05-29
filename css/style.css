@@ -297,6 +297,18 @@ header h1 {
   letter-spacing: 1px;
 }
 
+.header-link {
+  font-size: 0.75rem;
+  color: #00ff88;
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: text-shadow 0.2s;
+}
+.header-link:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
 #btn-logout {
   padding: 6px 14px;
   border: 1px solid #ff00ff;

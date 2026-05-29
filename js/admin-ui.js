@@ -5,6 +5,7 @@ export function renderAdminLayout(container, user, onLogout, activeTab, onTabCha
         <h1>Climate Panel</h1>
         <div class="header-right">
           <span class="user-email">${user.email}</span>
+          <a href="index.html" class="header-link">&#8592; Climate</a>
           <button id="btn-logout" class="btn">Logout</button>
         </div>
       </header>
